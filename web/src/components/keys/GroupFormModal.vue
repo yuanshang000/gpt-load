@@ -366,6 +366,10 @@ function handleConfigKeyChange(index: number, key: string) {
   }
 }
 
+const getConfigOption = (key: string) => {
+  return configOptions.value.find(opt => opt.key === key);
+};
+
 // 关闭弹窗
 function handleClose() {
   emit("update:show", false);
@@ -440,7 +444,7 @@ async function handleSubmit() {
 <template>
   <n-modal :show="show" @update:show="handleClose" class="group-form-modal">
     <n-card
-      style="width: 800px"
+      class="group-form-card"
       :title="group ? '编辑分组' : '创建分组'"
       :bordered="false"
       size="huge"
@@ -462,6 +466,7 @@ async function handleSubmit() {
         label-placement="left"
         label-width="120px"
         require-mark-placement="right-hanging"
+        class="group-form"
       >
         <!-- 基础信息 -->
         <div class="form-section">
@@ -677,9 +682,14 @@ async function handleSubmit() {
               </div>
               <div class="upstream-weight">
                 <span class="weight-label">权重</span>
-                <n-tooltip trigger="hover" placement="top">
+                <n-tooltip trigger="hover" placement="top" style="width: 100%">
                   <template #trigger>
-                    <n-input-number v-model:value="upstream.weight" :min="1" placeholder="权重" />
+                    <n-input-number
+                      v-model:value="upstream.weight"
+                      :min="1"
+                      placeholder="权重"
+                      style="width: 100%"
+                    />
                   </template>
                   负载均衡权重，数值越大被选中的概率越高。例如：权重为2的上游被选中的概率是权重为1的两倍
                 </n-tooltip>
@@ -771,11 +781,16 @@ async function handleSubmit() {
                         />
                       </div>
                       <div class="config-value">
-                        <n-input-number
-                          v-model:value="configItem.value"
-                          placeholder="参数值"
-                          :precision="0"
-                        />
+                        <n-tooltip trigger="hover" placement="top">
+                          <template #trigger>
+                            <n-input-number
+                              v-model:value="configItem.value"
+                              placeholder="参数值"
+                              :precision="0"
+                            />
+                          </template>
+                          {{ getConfigOption(configItem.key)?.description || "设置此配置项的值" }}
+                        </n-tooltip>
                       </div>
                       <div class="config-actions">
                         <n-button
@@ -1105,5 +1120,50 @@ async function handleSubmit() {
   flex: 0 0 32px;
   display: flex;
   justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .group-form-card {
+    width: 100vw !important;
+  }
+
+  .group-form {
+    label-width: auto !important;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .form-item-half {
+    width: 100%;
+  }
+
+  .section-title {
+    font-size: 0.9rem;
+  }
+
+  .upstream-row,
+  .config-item-content {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .upstream-weight {
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .config-value {
+    flex: 1;
+  }
+
+  .upstream-actions,
+  .config-actions {
+    justify-content: flex-end;
+  }
 }
 </style>

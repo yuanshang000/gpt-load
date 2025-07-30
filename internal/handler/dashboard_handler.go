@@ -11,12 +11,16 @@ import (
 
 // Stats Get dashboard statistics
 func (s *Server) Stats(c *gin.Context) {
-	var activeKeys, invalidKeys, groupCount int64
+	var activeKeys, invalidKeys int64
 	s.DB.Model(&models.APIKey{}).Where("status = ?", models.KeyStatusActive).Count(&activeKeys)
 	s.DB.Model(&models.APIKey{}).Where("status = ?", models.KeyStatusInvalid).Count(&invalidKeys)
-	s.DB.Model(&models.Group{}).Count(&groupCount)
 
 	now := time.Now()
+	rpmStats, err := s.getRPMStats(now)
+	if err != nil {
+		response.Error(c, app_errors.NewAPIError(app_errors.ErrDatabase, "failed to get rpm stats"))
+		return
+	}
 	twentyFourHoursAgo := now.Add(-24 * time.Hour)
 	fortyEightHoursAgo := now.Add(-48 * time.Hour)
 
@@ -85,9 +89,7 @@ func (s *Server) Stats(c *gin.Context) {
 			SubValue:    invalidKeys,
 			SubValueTip: "无效密钥数量",
 		},
-		GroupCount: models.StatCard{
-			Value: float64(groupCount),
-		},
+		RPM: rpmStats,
 		RequestCount: models.StatCard{
 			Value:         float64(currentPeriod.TotalRequests),
 			Trend:         reqTrend,
@@ -178,4 +180,43 @@ func (s *Server) getHourlyStats(startTime, endTime time.Time) (hourlyStatResult,
 		Where("time >= ? AND time < ?", startTime, endTime).
 		Scan(&result).Error
 	return result, err
+}
+
+type rpmStatResult struct {
+	CurrentRequests  int64
+	PreviousRequests int64
+}
+
+func (s *Server) getRPMStats(now time.Time) (models.StatCard, error) {
+	tenMinutesAgo := now.Add(-10 * time.Minute)
+	twentyMinutesAgo := now.Add(-20 * time.Minute)
+
+	var result rpmStatResult
+	err := s.DB.Model(&models.RequestLog{}).
+		Select("count(case when timestamp >= ? then 1 end) as current_requests, count(case when timestamp >= ? and timestamp < ? then 1 end) as previous_requests", tenMinutesAgo, twentyMinutesAgo, tenMinutesAgo).
+		Where("timestamp >= ?", twentyMinutesAgo).
+		Scan(&result).Error
+
+	if err != nil {
+		return models.StatCard{}, err
+	}
+
+	currentRPM := float64(result.CurrentRequests) / 10.0
+	previousRPM := float64(result.PreviousRequests) / 10.0
+
+	rpmTrend := 0.0
+	rpmTrendIsGrowth := true
+	if previousRPM > 0 {
+		rpmTrend = (currentRPM - previousRPM) / previousRPM * 100
+		rpmTrendIsGrowth = rpmTrend >= 0
+	} else if currentRPM > 0 {
+		rpmTrend = 100.0
+		rpmTrendIsGrowth = true
+	}
+
+	return models.StatCard{
+		Value:         currentRPM,
+		Trend:         rpmTrend,
+		TrendIsGrowth: rpmTrendIsGrowth,
+	}, nil
 }

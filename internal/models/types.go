@@ -107,7 +107,7 @@ type StatCard struct {
 // DashboardStatsResponse 用于仪表盘基础统计的API响应
 type DashboardStatsResponse struct {
 	KeyCount     StatCard `json:"key_count"`
-	GroupCount   StatCard `json:"group_count"`
+	RPM          StatCard `json:"rpm"`
 	RequestCount StatCard `json:"request_count"`
 	ErrorRate    StatCard `json:"error_rate"`
 }

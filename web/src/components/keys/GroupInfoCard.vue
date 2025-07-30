@@ -275,7 +275,7 @@ function resetPage() {
       <!-- 统计摘要区 -->
       <div class="stats-summary">
         <n-spin :show="loading" size="small">
-          <n-grid :cols="4" :x-gap="12" :y-gap="12" responsive="screen">
+          <n-grid cols="2 s:4" :x-gap="12" :y-gap="12" responsive="screen">
             <n-grid-item span="1">
               <n-statistic :label="`密钥数量：${stats?.key_stats?.total_keys ?? 0}`">
                 <n-tooltip trigger="hover">
@@ -379,7 +379,7 @@ function resetPage() {
               <div class="detail-section">
                 <h4 class="section-title">基础信息</h4>
                 <n-form label-placement="left" label-width="85px" label-align="right">
-                  <n-grid :cols="2">
+                  <n-grid cols="1 m:2">
                     <n-grid-item>
                       <n-form-item label="分组名称：">
                         {{ group?.name }}

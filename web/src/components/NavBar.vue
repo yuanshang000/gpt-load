@@ -1,17 +1,36 @@
 <script setup lang="ts">
-import type { MenuOption } from "naive-ui";
-import { computed, h } from "vue";
+import { type MenuOption } from "naive-ui";
+import { computed, h, watch } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 
-const menuOptions: MenuOption[] = [
-  renderMenuItem("dashboard", "仪表盘", "📊"),
-  renderMenuItem("keys", "密钥管理", "🔑"),
-  renderMenuItem("logs", "日志", "📋"),
-  renderMenuItem("settings", "系统设置", "⚙️"),
-];
+const props = defineProps({
+  mode: {
+    type: String,
+    default: "horizontal",
+  },
+});
+
+const emit = defineEmits(["close"]);
+
+const menuOptions = computed<MenuOption[]>(() => {
+  const options: MenuOption[] = [
+    renderMenuItem("dashboard", "仪表盘", "📊"),
+    renderMenuItem("keys", "密钥管理", "🔑"),
+    renderMenuItem("logs", "日志", "📋"),
+    renderMenuItem("settings", "系统设置", "⚙️"),
+  ];
+
+  return options;
+});
 
 const route = useRoute();
 const activeMenu = computed(() => route.name);
+
+watch(activeMenu, () => {
+  if (props.mode === "vertical") {
+    emit("close");
+  }
+});
 
 function renderMenuItem(key: string, label: string, icon: string): MenuOption {
   return {
@@ -39,10 +58,9 @@ function renderMenuItem(key: string, label: string, icon: string): MenuOption {
 <template>
   <div>
     <n-menu
-      mode="horizontal"
+      :mode="mode"
       :options="menuOptions"
       :value="activeMenu"
-      responsive
       class="modern-menu"
     />
   </div>
@@ -61,24 +79,22 @@ function renderMenuItem(key: string, label: string, icon: string): MenuOption {
   font-weight: 500;
 }
 
-:deep(.n-menu-item-content) {
-  padding: 0 10px !important;
-}
-
-:deep(.nav-item-text) {
-  font-size: 0.95rem;
-  letter-spacing: 0.2px;
-}
-
 :deep(.n-menu-item) {
   border-radius: var(--border-radius-md);
-  margin: 0 4px;
-  transition: all 0.2s ease;
+}
+
+:deep(.n-menu--vertical .n-menu-item-content) {
+  justify-content: center;
+}
+
+:deep(.n-menu--vertical .n-menu-item) {
+  margin: 4px 8px;
 }
 
 :deep(.n-menu-item:hover) {
   background: rgba(102, 126, 234, 0.1);
   transform: translateY(-1px);
+  border-radius: var(--border-radius-md);
 }
 
 :deep(.n-menu-item--selected) {
@@ -86,6 +102,7 @@ function renderMenuItem(key: string, label: string, icon: string): MenuOption {
   color: white;
   font-weight: 600;
   box-shadow: var(--shadow-md);
+  border-radius: var(--border-radius-md);
 }
 
 :deep(.n-menu-item--selected:hover) {

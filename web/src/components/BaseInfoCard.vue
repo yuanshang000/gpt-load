@@ -59,7 +59,7 @@ onMounted(() => {
 <template>
   <div class="stats-container">
     <n-space vertical size="medium">
-      <n-grid :cols="4" :x-gap="20" :y-gap="20" responsive="screen">
+      <n-grid cols="2 s:4" :x-gap="20" :y-gap="20" responsive="screen">
         <!-- 密钥数量 -->
         <n-grid-item span="1">
           <n-card :bordered="false" class="stat-card" style="animation-delay: 0s">
@@ -217,13 +217,13 @@ onMounted(() => {
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--border-radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: white;
   box-shadow: var(--shadow-md);
 }
@@ -262,7 +262,7 @@ onMounted(() => {
 }
 
 .stat-value {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
   line-height: 1.2;
   color: #1e293b;

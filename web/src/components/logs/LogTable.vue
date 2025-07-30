@@ -431,19 +431,32 @@ function changePageSize(size: number) {
   margin-left: auto;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 768px) {
   .filter-row {
-    gap: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
 
   .filter-group {
-    min-width: auto;
+    width: 100%;
+  }
+
+  .filter-group > * {
+    width: 100% !important;
   }
 
   .filter-actions {
-    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    gap: 12px;
   }
 }
+
 .table-main {
   background: white;
   border-radius: 8px;
@@ -453,7 +466,7 @@ function changePageSize(size: number) {
   /* background: white;
   border-radius: 8px; */
   flex: 1;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
 }
 .empty-container {

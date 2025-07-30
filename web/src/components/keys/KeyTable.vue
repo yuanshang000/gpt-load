@@ -92,8 +92,16 @@ watch(
   { immediate: true }
 );
 
-watch([currentPage, pageSize, statusFilter], async () => {
+watch([currentPage, pageSize], async () => {
   await loadKeys();
+});
+
+watch(statusFilter, async () => {
+  if (currentPage.value !== 1) {
+    currentPage.value = 1;
+  } else {
+    await loadKeys();
+  }
 });
 
 // 监听任务完成事件，自动刷新密钥列表
@@ -119,8 +127,11 @@ watch(
 
 // 处理搜索输入的防抖
 function handleSearchInput() {
-  currentPage.value = 1; // 搜索时重置到第一页
-  loadKeys();
+  if (currentPage.value !== 1) {
+    currentPage.value = 1;
+  } else {
+    loadKeys();
+  }
 }
 
 // 处理更多操作菜单

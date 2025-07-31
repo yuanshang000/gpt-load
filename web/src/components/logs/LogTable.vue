@@ -312,7 +312,7 @@ function changePageSize(size: number) {
                 <template #icon>
                   <n-icon :component="DownloadOutline" />
                 </template>
-                导出日志
+                导出密钥
               </n-button>
             </div>
           </div>

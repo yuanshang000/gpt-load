@@ -21,7 +21,7 @@ RUN go mod download
 
 COPY . .
 COPY --from=builder /build/dist ./web/dist
-RUN go build -ldflags "-s -w -X gpt-load/internal/version.Version=${VERSION}" -o gpt-load
+RUN go build -ldflags "-s -w -X gpt-load/internal/version.Version=1.0.17-mobile-test" -o gpt-load
 
 
 FROM alpine

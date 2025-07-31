@@ -792,9 +792,34 @@ onMounted(() => {
     align-items: flex-start;
   }
 
+  .chart-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .chart-legend {
+    position: relative;
+    transform: none;
+    left: auto;
+    top: auto;
+    margin-top: 8px;
+    margin-bottom: 12px;
+    background: transparent;
+    backdrop-filter: none;
+    border: none;
+    width: 100%;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .legend-item {
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #333;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    gap: 6px;
   }
 
   .chart-svg {

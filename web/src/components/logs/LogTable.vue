@@ -235,80 +235,70 @@ function changePageSize(size: number) {
       <!-- 工具栏 -->
       <div class="toolbar">
         <div class="filter-section">
-          <!-- 第一行：基础筛选 -->
           <div class="filter-row">
-            <div class="filter-group">
-              <n-date-picker
-                v-model:value="filters.start_time"
-                type="datetime"
-                clearable
-                size="small"
-                placeholder="开始时间"
-                style="width: 180px"
-              />
-            </div>
-            <div class="filter-group">
-              <n-date-picker
-                v-model:value="filters.end_time"
-                type="datetime"
-                clearable
-                size="small"
-                placeholder="结束时间"
-                style="width: 180px"
-              />
-            </div>
-            <div class="filter-group">
-              <n-select
-                v-model:value="filters.is_success"
-                :options="successOptions"
-                size="small"
-                style="width: 166px"
-                @update:value="handleSearch"
-              />
-            </div>
-            <div class="filter-group">
-              <n-input
-                v-model:value="filters.status_code"
-                placeholder="状态码"
-                size="small"
-                clearable
-                style="width: 166px"
-                @keyup.enter="handleSearch"
-              />
-            </div>
-            <div class="filter-group">
-              <n-input
-                v-model:value="filters.group_name"
-                placeholder="分组名"
-                size="small"
-                clearable
-                style="width: 166px"
-                @keyup.enter="handleSearch"
-              />
-            </div>
-            <div class="filter-group">
-              <n-input
-                v-model:value="filters.key_value"
-                placeholder="密钥"
-                size="small"
-                clearable
-                style="width: 166px"
-                @keyup.enter="handleSearch"
-              />
-            </div>
-          </div>
-
-          <!-- 第二行：详细筛选和操作 -->
-          <div class="filter-row">
-            <div class="filter-group">
-              <n-input
-                v-model:value="filters.error_contains"
-                placeholder="错误信息"
-                size="small"
-                clearable
-                style="width: 384px"
-                @keyup.enter="handleSearch"
-              />
+            <div class="filter-grid">
+              <div class="filter-item">
+                <n-input
+                  v-model:value="filters.group_name"
+                  placeholder="分组名"
+                  size="small"
+                  clearable
+                  @keyup.enter="handleSearch"
+                />
+              </div>
+              <div class="filter-item">
+                <n-input
+                  v-model:value="filters.key_value"
+                  placeholder="密钥"
+                  size="small"
+                  clearable
+                  @keyup.enter="handleSearch"
+                />
+              </div>
+              <div class="filter-item">
+                <n-input
+                  v-model:value="filters.status_code"
+                  placeholder="状态码"
+                  size="small"
+                  clearable
+                  @keyup.enter="handleSearch"
+                />
+              </div>
+              <div class="filter-item">
+                <n-select
+                  v-model:value="filters.is_success"
+                  :options="successOptions"
+                  size="small"
+                  @update:value="handleSearch"
+                />
+              </div>
+              <div class="filter-item">
+                <n-input
+                  v-model:value="filters.error_contains"
+                  placeholder="错误信息"
+                  size="small"
+                  clearable
+                  @keyup.enter="handleSearch"
+                />
+              </div>
+              <div class="filter-item">
+                <n-date-picker
+                  v-model:value="filters.start_time"
+                  type="datetime"
+                  clearable
+                  size="small"
+                  placeholder="开始时间"
+                />
+              </div>
+              <div class="filter-item">
+                <n-date-picker
+                  v-model:value="filters.end_time"
+                  type="datetime"
+                  clearable
+                  size="small"
+                  placeholder="结束时间"
+                />
+              </div>
             </div>
             <div class="filter-actions">
               <n-button ghost size="small" :disabled="loading" @click="handleSearch">
@@ -400,50 +390,47 @@ function changePageSize(size: number) {
 
 .filter-row {
   display: flex;
-  align-items: center;
-  gap: 24px;
   flex-wrap: wrap;
+  align-items: flex-end; /* Aligns buttons with the bottom of the filter items */
+  gap: 16px;
 }
 
-.filter-group {
+.filter-grid {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex: 1 1 auto; /* Let it take available space and wrap */
 }
 
-.filter-label {
-  font-size: 13px;
-  color: #666;
-  white-space: nowrap;
-  min-width: 50px;
-}
-
-.filter-separator {
-  font-size: 12px;
-  color: #999;
-  margin: 0 4px;
+.filter-item {
+  flex: 1 1 180px; /* Each item will have a base width of 180px and can grow */
+  min-width: 180px; /* Prevent from becoming too narrow */
 }
 
 .filter-actions {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
 }
 
-@media (max-width: 1200px) {
-  .filter-row {
-    gap: 16px;
+@media (max-width: 768px) {
+  .pagination-container {
+    flex-direction: column;
+    gap: 12px;
   }
+}
 
-  .filter-group {
-    min-width: auto;
-  }
-
+@media (max-width: 480px) {
   .filter-actions {
-    margin-left: 0;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-actions .n-button {
+    width: 100%;
   }
 }
+
 .table-main {
   background: white;
   border-radius: 8px;
@@ -453,7 +440,7 @@ function changePageSize(size: number) {
   /* background: white;
   border-radius: 8px; */
   flex: 1;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
 }
 .empty-container {

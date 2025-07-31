@@ -218,7 +218,7 @@ onMounted(() => {
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   padding: 12px 24px;
   font-size: 14px;
-  height: 52px;
+  min-height: 52px;
 }
 
 .footer-container {
@@ -231,7 +231,6 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  flex-wrap: wrap;
   line-height: 1.4;
 }
 
@@ -269,6 +268,7 @@ onMounted(() => {
   font-weight: 500;
   font-size: 13px;
   color: #666;
+  white-space: nowrap;
 }
 
 .version-clickable {
@@ -301,6 +301,7 @@ onMounted(() => {
   border-radius: 4px;
   transition: all 0.2s ease;
   font-size: 13px;
+  white-space: nowrap;
 }
 
 .footer-link:hover {
@@ -345,6 +346,7 @@ onMounted(() => {
 @media (max-width: 768px) {
   .app-footer {
     padding: 10px 16px;
+    height: auto;
   }
 
   .footer-main {
@@ -353,7 +355,7 @@ onMounted(() => {
     text-align: center;
   }
 
-  .divider {
+  .footer-main :deep(.n-divider) {
     display: none;
   }
 

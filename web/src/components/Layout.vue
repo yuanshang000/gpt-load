@@ -3,6 +3,21 @@ import AppFooter from "@/components/AppFooter.vue";
 import GlobalTaskProgressBar from "@/components/GlobalTaskProgressBar.vue";
 import Logout from "@/components/Logout.vue";
 import NavBar from "@/components/NavBar.vue";
+import { useMediaQuery } from "@vueuse/core";
+import { ref, watch } from "vue";
+
+const isMenuOpen = ref(false);
+const isMobile = useMediaQuery("(max-width: 768px)");
+
+watch(isMobile, value => {
+  if (!value) {
+    isMenuOpen.value = false;
+  }
+});
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+};
 </script>
 
 <template>
@@ -13,16 +28,32 @@ import NavBar from "@/components/NavBar.vue";
           <div class="brand-icon">
             <img src="@/assets/logo.png" alt="" />
           </div>
-          <h1 class="brand-title">GPT Load</h1>
+          <h1 v-if="!isMobile" class="brand-title">GPT Load</h1>
         </div>
 
-        <nav-bar class="header-nav" />
+        <nav v-if="!isMobile" class="header-nav">
+          <nav-bar />
+        </nav>
 
         <div class="header-actions">
-          <logout />
+          <logout v-if="!isMobile" />
+          <n-button v-else text @click="toggleMenu">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+            </svg>
+          </n-button>
         </div>
       </div>
     </n-layout-header>
+
+    <n-drawer v-model:show="isMenuOpen" :width="240" placement="right">
+      <n-drawer-content title="GPT Load" body-content-style="padding: 0;">
+        <nav-bar mode="vertical" @close="isMenuOpen = false" />
+        <div class="mobile-actions">
+          <logout />
+        </div>
+      </n-drawer-content>
+    </n-drawer>
 
     <n-layout-content class="layout-content">
       <div class="content-wrapper">
@@ -56,14 +87,14 @@ import NavBar from "@/components/NavBar.vue";
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 0 24px;
+  padding: 0 12px;
 }
 
 .header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px;
+  padding: 8px 0;
   overflow-x: auto;
   max-width: 1200px;
   margin: 0 auto;
@@ -101,6 +132,13 @@ import NavBar from "@/components/NavBar.vue";
 
 .header-actions {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-actions {
+  padding: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .layout-content {
@@ -113,7 +151,7 @@ import NavBar from "@/components/NavBar.vue";
 }
 
 .content-wrapper {
-  padding: 24px 12px;
+  padding: 16px;
   min-height: calc(100vh - 111px);
 }
 

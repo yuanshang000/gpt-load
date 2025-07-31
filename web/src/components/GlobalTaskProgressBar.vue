@@ -170,12 +170,21 @@ function getTaskTitle(): string {
   bottom: 62px;
   right: 10px;
   z-index: 9999;
-  width: 350px;
+  width: 95%;
+  max-width: 350px;
   background: white;
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-lg);
   border: 1px solid rgba(0, 0, 0, 0.08);
   animation: slideIn 0.3s ease-out;
+}
+
+@media (max-width: 768px) {
+  .global-task-progress {
+    bottom: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes slideIn {

@@ -815,8 +815,8 @@ function resetPage() {
 
 .keys-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
 }
 
 .key-card {
@@ -1025,5 +1025,24 @@ function resetPage() {
 .page-info {
   font-size: 12px;
   color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .toolbar-left,
+  .toolbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .toolbar-right .n-space {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 </style>

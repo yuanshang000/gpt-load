@@ -7,10 +7,8 @@ import { NSpace } from "naive-ui";
 <template>
   <div class="dashboard-container">
     <n-space vertical size="large">
-      <n-space vertical size="large" style="gap: 24px">
-        <base-info-card />
-        <line-chart class="dashboard-chart" />
-      </n-space>
+      <base-info-card />
+      <line-chart class="dashboard-chart" />
     </n-space>
   </div>
 </template>

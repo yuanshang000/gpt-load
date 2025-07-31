@@ -106,14 +106,14 @@ function handleGroupDelete(deletedGroup: Group) {
 <style scoped>
 .keys-container {
   display: flex;
+  flex-direction: column;
   gap: 8px;
   width: 100%;
 }
 
 .sidebar {
-  width: 240px;
+  width: 100%;
   flex-shrink: 0;
-  height: calc(100vh - 159px);
 }
 
 .main-content {
@@ -132,5 +132,16 @@ function handleGroupDelete(deletedGroup: Group) {
   display: flex;
   flex-direction: column;
   min-height: 0;
+}
+
+@media (min-width: 768px) {
+  .keys-container {
+    flex-direction: row;
+  }
+
+  .sidebar {
+    width: 240px;
+    height: calc(100vh - 159px);
+  }
 }
 </style>

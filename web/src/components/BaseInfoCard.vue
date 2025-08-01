@@ -39,7 +39,7 @@ const fetchStats = async () => {
         key_count:
           (stats.value?.key_count?.value ?? 0) /
           ((stats.value?.key_count?.value ?? 1) + (stats.value?.key_count?.sub_value ?? 1)),
-        group_count: 1,
+        rpm: Math.min(100 + (stats.value?.rpm?.trend ?? 0), 100) / 100,
         request_count: Math.min(100 + (stats.value?.request_count?.trend ?? 0), 100) / 100,
         error_rate: (100 - (stats.value?.error_rate?.value ?? 0)) / 100,
       };
@@ -93,25 +93,33 @@ onMounted(() => {
           </n-card>
         </n-grid-item>
 
-        <!-- 分组数量 -->
+        <!-- RPM (10分钟) -->
         <n-grid-item span="1">
           <n-card :bordered="false" class="stat-card" style="animation-delay: 0.05s">
             <div class="stat-header">
-              <div class="stat-icon group-icon">📁</div>
+              <div class="stat-icon rpm-icon">⏱️</div>
+              <n-tag
+                v-if="stats?.rpm && stats.rpm.trend !== undefined"
+                :type="stats?.rpm.trend_is_growth ? 'success' : 'error'"
+                size="small"
+                class="stat-trend"
+              >
+                {{ stats ? formatTrend(stats.rpm.trend) : "--" }}
+              </n-tag>
             </div>
 
             <div class="stat-content">
               <div class="stat-value">
-                {{ stats?.group_count?.value ?? 0 }}
+                {{ stats?.rpm?.value.toFixed(1) ?? 0 }}
               </div>
-              <div class="stat-title">分组数量</div>
+              <div class="stat-title">10分钟RPM</div>
             </div>
 
             <div class="stat-bar">
               <div
-                class="stat-bar-fill group-bar"
+                class="stat-bar-fill rpm-bar"
                 :style="{
-                  width: `${(animatedValues.group_count ?? 0) * 100}%`,
+                  width: `${(animatedValues.rpm ?? 0) * 100}%`,
                 }"
               />
             </div>
@@ -232,7 +240,7 @@ onMounted(() => {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.group-icon {
+.rpm-icon {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
@@ -295,7 +303,7 @@ onMounted(() => {
   background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
 }
 
-.group-bar {
+.rpm-bar {
   background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
 }
 

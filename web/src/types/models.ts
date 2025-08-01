@@ -171,7 +171,7 @@ export interface StatCard {
 // 仪表盘基础统计响应
 export interface DashboardStatsResponse {
   key_count: StatCard;
-  group_count: StatCard;
+  rpm: StatCard;
   request_count: StatCard;
   error_rate: StatCard;
 }

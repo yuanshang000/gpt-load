@@ -888,7 +888,8 @@ function resetPage() {
 .key-stats {
   display: flex;
   gap: 8px;
-  font-size: 11px;
+  font-size: 12px;
+  overflow: hidden;
   color: #6c757d;
   flex: 1;
   min-width: 0;

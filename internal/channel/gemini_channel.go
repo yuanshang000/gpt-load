@@ -71,6 +71,29 @@ func (ch *GeminiChannel) IsStreamRequest(c *gin.Context, bodyBytes []byte) bool 
 	return false
 }
 
+func (ch *GeminiChannel) ExtractModel(c *gin.Context, bodyBytes []byte) string {
+	// gemini format
+	path := c.Request.URL.Path
+	parts := strings.Split(path, "/")
+	for i, part := range parts {
+		if part == "models" && i+1 < len(parts) {
+			modelPart := parts[i+1]
+			return strings.Split(modelPart, ":")[0]
+		}
+	}
+
+	// openai format
+	type modelPayload struct {
+		Model string `json:"model"`
+	}
+	var p modelPayload
+	if err := json.Unmarshal(bodyBytes, &p); err == nil && p.Model != "" {
+		return strings.TrimPrefix(p.Model, "models/")
+	}
+
+	return ""
+}
+
 // ValidateKey checks if the given API key is valid by making a generateContent request.
 func (ch *GeminiChannel) ValidateKey(ctx context.Context, key string) (bool, error) {
 	upstreamURL := ch.getUpstreamURL()

@@ -91,7 +91,8 @@ func (ch *AnthropicChannel) ValidateKey(ctx context.Context, apiKey *models.APIK
 
 	// Use a minimal, low-cost payload for validation
 	payload := gin.H{
-		"model": ch.TestModel,
+		"model":      ch.TestModel,
+		"max_tokens": 100,
 		"messages": []gin.H{
 			{"role": "user", "content": "hi"},
 		},

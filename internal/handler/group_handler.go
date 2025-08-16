@@ -753,6 +753,165 @@ func (s *Server) GetGroupStats(c *gin.Context) {
 	response.Success(c, resp)
 }
 
+// GroupCopyRequest defines the payload for copying a group.
+type GroupCopyRequest struct {
+	CopyKeys string `json:"copy_keys"` // "none"|"valid_only"|"all"
+}
+
+// GroupCopyResponse defines the response for group copy operation.
+type GroupCopyResponse struct {
+	Group *GroupResponse `json:"group"`
+}
+
+// generateUniqueGroupName generates a unique group name by appending _copy and numbers if needed.
+func (s *Server) generateUniqueGroupName(baseName string) string {
+	var groups []models.Group
+	if err := s.DB.Select("name").Find(&groups).Error; err != nil {
+		return baseName + "_copy"
+	}
+
+	// Create a map of existing names for quick lookup
+	existingNames := make(map[string]bool)
+	for _, group := range groups {
+		existingNames[group.Name] = true
+	}
+
+	// Try base name with _copy suffix first
+	copyName := baseName + "_copy"
+	if !existingNames[copyName] {
+		return copyName
+	}
+
+	// Try appending numbers to _copy suffix
+	for i := 2; i <= 1000; i++ {
+		candidate := fmt.Sprintf("%s_copy_%d", baseName, i)
+		if !existingNames[candidate] {
+			return candidate
+		}
+	}
+
+	return copyName
+}
+
+// CopyGroup handles copying a group with optional content.
+func (s *Server) CopyGroup(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.Error(c, app_errors.NewAPIError(app_errors.ErrBadRequest, "Invalid group ID format"))
+		return
+	}
+	sourceGroupID := uint(id)
+
+	var req GroupCopyRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, app_errors.NewAPIError(app_errors.ErrInvalidJSON, err.Error()))
+		return
+	}
+
+	// Validate copy keys option
+	if req.CopyKeys != "" && req.CopyKeys != "none" && req.CopyKeys != "valid_only" && req.CopyKeys != "all" {
+		response.Error(c, app_errors.NewAPIError(app_errors.ErrValidation, "Invalid copy_keys value. Must be 'none', 'valid_only', or 'all'"))
+		return
+	}
+	if req.CopyKeys == "" {
+		req.CopyKeys = "all"
+	}
+
+	// Check if source group exists
+	var sourceGroup models.Group
+	if err := s.DB.First(&sourceGroup, sourceGroupID).Error; err != nil {
+		response.Error(c, app_errors.ParseDBError(err))
+		return
+	}
+
+	// Start transaction
+	tx := s.DB.Begin()
+	if tx.Error != nil {
+		response.Error(c, app_errors.ErrDatabase)
+		return
+	}
+	defer tx.Rollback()
+
+	// Create new group by copying source group and overriding specific fields
+	newGroup := sourceGroup
+	newGroup.ID = 0
+	newGroup.Name = s.generateUniqueGroupName(sourceGroup.Name)
+	if sourceGroup.DisplayName != "" {
+		newGroup.DisplayName = sourceGroup.DisplayName + " Copy"
+	}
+	newGroup.CreatedAt = time.Time{}
+	newGroup.UpdatedAt = time.Time{}
+	newGroup.LastValidatedAt = nil
+
+	// Create the new group
+	if err := tx.Create(&newGroup).Error; err != nil {
+		response.Error(c, app_errors.ParseDBError(err))
+		return
+	}
+
+	// Prepare key data for async import task
+	var sourceKeyValues []string
+
+	if req.CopyKeys != "none" {
+		var sourceKeys []models.APIKey
+		query := tx.Where("group_id = ?", sourceGroupID)
+
+		// Filter by status if only copying valid keys
+		if req.CopyKeys == "valid_only" {
+			query = query.Where("status = ?", models.KeyStatusActive)
+		}
+
+		if err := query.Find(&sourceKeys).Error; err != nil {
+			response.Error(c, app_errors.ParseDBError(err))
+			return
+		}
+
+		// Extract key values for async import task
+		for _, sourceKey := range sourceKeys {
+			sourceKeyValues = append(sourceKeyValues, sourceKey.KeyValue)
+		}
+	}
+
+	// Commit transaction
+	if err := tx.Commit().Error; err != nil {
+		response.Error(c, app_errors.ErrDatabase)
+		return
+	}
+
+	// Update caches after successful transaction
+	if err := s.GroupManager.Invalidate(); err != nil {
+		logrus.WithContext(c.Request.Context()).WithError(err).Error("failed to invalidate group cache")
+	}
+
+	// Start async key import task if there are keys to copy (reuse existing logic)
+	if len(sourceKeyValues) > 0 {
+		// Convert key values array to text format expected by KeyImportService
+		keysText := strings.Join(sourceKeyValues, "\n")
+
+		// Directly reuse the AddMultipleKeysAsync logic from key_handler.go
+		if _, err := s.KeyImportService.StartImportTask(&newGroup, keysText); err != nil {
+			logrus.WithFields(logrus.Fields{
+				"groupId":  newGroup.ID,
+				"keyCount": len(sourceKeyValues),
+				"error":    err,
+			}).Error("Failed to start async key import task for group copy")
+		} else {
+			logrus.WithFields(logrus.Fields{
+				"groupId":  newGroup.ID,
+				"keyCount": len(sourceKeyValues),
+			}).Info("Started async key import task for group copy")
+		}
+	}
+
+	// Prepare response
+	groupResponse := s.newGroupResponse(&newGroup)
+	copyResponse := &GroupCopyResponse{
+		Group: groupResponse,
+	}
+
+	response.Success(c, copyResponse)
+}
+
 // List godoc
 func (s *Server) List(c *gin.Context) {
 	var groups []models.Group

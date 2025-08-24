@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"gpt-load/internal/config"
+	"gpt-load/internal/encryption"
 	db "gpt-load/internal/db/migrations"
 	"gpt-load/internal/keypool"
 	"gpt-load/internal/models"
@@ -37,6 +38,7 @@ type App struct {
 	proxyServer       *proxy.ProxyServer
 	storage           store.Store
 	db                *gorm.DB
+	encryptionSvc     encryption.Service
 	httpServer        *http.Server
 }
 
@@ -54,6 +56,7 @@ type AppParams struct {
 	ProxyServer       *proxy.ProxyServer
 	Storage           store.Store
 	DB                *gorm.DB
+	EncryptionSvc     encryption.Service
 }
 
 // NewApp is the constructor for App, with dependencies injected by dig.
@@ -70,6 +73,7 @@ func NewApp(params AppParams) *App {
 		proxyServer:       params.ProxyServer,
 		storage:           params.Storage,
 		db:                params.DB,
+		encryptionSvc:     params.EncryptionSvc,
 	}
 }
 
@@ -92,6 +96,13 @@ func (a *App) Start() error {
 		// 数据修复
 		db.MigrateDatabase(a.db)
 		logrus.Info("Database auto-migration completed.")
+
+		// Encrypt existing keys if encryption is enabled
+		if a.configManager.GetEncryptionKey() != "" {
+			if err := a.migrateAPIKeys(); err != nil {
+				return fmt.Errorf("API key migration failed: %w", err)
+			}
+		}
 
 		// 初始化系统设置
 		if err := a.settingsManager.EnsureSettingsInitialized(a.configManager.GetAuthConfig()); err != nil {
@@ -208,4 +219,38 @@ func (a *App) Stop(ctx context.Context) {
 	}
 
 	logrus.Info("Server exited gracefully")
+}
+
+func (a *App) migrateAPIKeys() error {
+	logrus.Info("Starting API key migration to encrypted format...")
+	var keys []models.APIKey
+	if err := a.db.Find(&keys).Error; err != nil {
+		return fmt.Errorf("failed to fetch API keys for migration: %w", err)
+	}
+
+	var migratedCount int
+	for _, key := range keys {
+		_, err := a.encryptionSvc.Decrypt(key.KeyValue)
+		if err != nil {
+			// Assuming decryption failed because the key is in plaintext
+			encryptedValue, encErr := a.encryptionSvc.Encrypt(key.KeyValue)
+			if encErr != nil {
+				logrus.WithError(encErr).WithField("key_id", key.ID).Error("Failed to encrypt key during migration, skipping")
+				continue
+			}
+			if err := a.db.Model(&key).Update("key_value", encryptedValue).Error; err != nil {
+				logrus.WithError(err).WithField("key_id", key.ID).Error("Failed to update encrypted key during migration, skipping")
+				continue
+			}
+			migratedCount++
+		}
+	}
+
+	if migratedCount > 0 {
+		logrus.Infof("Successfully migrated %d API keys.", migratedCount)
+	} else {
+		logrus.Info("No API keys needed migration.")
+	}
+
+	return nil
 }

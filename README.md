@@ -48,12 +48,12 @@ GPT-Load 作为透明代理服务，完整保留各 AI 服务商的原生 API �
 ```bash
 docker run -d --name gpt-load \
     -p 3001:3001 \
-    -e AUTH_KEY=sk-123456 \
+    -e AUTH_KEY=your-secure-key-here \
     -v "$(pwd)/data":/app/data \
     ghcr.io/tbphp/gpt-load:latest
 ```
 
-> 使用 `sk-123456` 登录管理界面：<http://localhost:3001>
+> 请将 `your-secure-key-here` 改为强密码（决不能使用默认值），即可登录管理界面：<http://localhost:3001>
 
 ### 方式二：使用 Docker Compose（推荐）
 
@@ -67,9 +67,13 @@ mkdir -p gpt-load && cd gpt-load
 wget https://raw.githubusercontent.com/tbphp/gpt-load/refs/heads/main/docker-compose.yml
 wget -O .env https://raw.githubusercontent.com/tbphp/gpt-load/refs/heads/main/.env.example
 
+# 编辑 .env 文件，修改AUTH_KEY为强密码，绝不使用 sk-123456 等默认或者简单密钥
+
 # 启动服务
 docker compose up -d
 ```
+
+在部署之前，您必须修改默认的管理密钥 (AUTH_KEY)，建议密钥格式：sk-prod-[随机字符串32位]。
 
 默认安装的是 SQLite 版本，适合轻量单机应用。
 
@@ -96,7 +100,7 @@ docker compose pull && docker compose down && docker compose up -d
 - 访问 Web 管理界面：<http://localhost:3001>
 - API 代理地址：<http://localhost:3001/proxy>
 
-> 使用默认的认证 Key `sk-123456` 登录管理端，认证 Key 可以在 .env 中修改 AUTH_KEY。
+> 使用你修改的 AUTH_KEY 登录管理端。
 
 ### 方式三：源码构建
 
@@ -111,6 +115,7 @@ go mod tidy
 # 创建配置
 cp .env.example .env
 
+# 编辑 .env 文件，修改AUTH_KEY为强密码，绝不使用 sk-123456 等默认或者简单密钥
 # 修改 .env 中 DATABASE_DSN 和 REDIS_DSN 配置
 # REDIS_DSN 为可选，如果不配置则启用内存存储
 
@@ -123,7 +128,7 @@ make run
 - 访问 Web 管理界面：<http://localhost:3001>
 - API 代理地址：<http://localhost:3001/proxy>
 
-> 使用默认的认证 Key `sk-123456` 登录管理端，认证 Key 可以在 .env 中修改 AUTH_KEY。
+> 使用你修改的 AUTH_KEY 登录管理端。
 
 ### 方式四：集群部署
 
@@ -175,7 +180,7 @@ GPT-Load 采用双层配置架构：
 
 | 配置项     | 环境变量       | 默认值             | 说明                                 |
 | ---------- | -------------- | ------------------ | ------------------------------------ |
-| 管理密钥   | `AUTH_KEY`     | `sk-123456`        | **管理端**的访问认证密钥             |
+| 管理密钥   | `AUTH_KEY`     | `sk-123456`        | **管理端**的访问认证密钥，请修改为强密码 |
 | 数据库连接 | `DATABASE_DSN` | ./data/gpt-load.db | 数据库连接字符串 (DSN) 或文件路径    |
 | Redis 连接 | `REDIS_DSN`    | -                  | Redis 连接字符串，为空时使用内存存储 |
 

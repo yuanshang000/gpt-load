@@ -48,12 +48,12 @@ GPT-Load serves as a transparent proxy service, completely preserving the native
 ```bash
 docker run -d --name gpt-load \
     -p 3001:3001 \
-    -e AUTH_KEY=sk-123456 \
+    -e AUTH_KEY=your-secure-key-here \
     -v "$(pwd)/data":/app/data \
     ghcr.io/tbphp/gpt-load:latest
 ```
 
-> Login to the management interface with `sk-123456`: <http://localhost:3001>
+> Please change `your-secure-key-here` to a strong password (never use the default value), then you can log in to the management interface: <http://localhost:3001>
 
 ### Method 2: Using Docker Compose (Recommended)
 
@@ -67,9 +67,13 @@ mkdir -p gpt-load && cd gpt-load
 wget https://raw.githubusercontent.com/tbphp/gpt-load/refs/heads/main/docker-compose.yml
 wget -O .env https://raw.githubusercontent.com/tbphp/gpt-load/refs/heads/main/.env.example
 
+# Edit the .env file and change AUTH_KEY to a strong password. Never use default or simple keys like sk-123456.
+
 # Start services
 docker compose up -d
 ```
+
+Before deployment, you must change the default admin key (AUTH_KEY). A recommended format is: sk-prod-[32-character random string].
 
 The default installation uses the SQLite version, which is suitable for lightweight, single-instance applications.
 
@@ -96,7 +100,7 @@ After deployment:
 - Access Web Management Interface: <http://localhost:3001>
 - API Proxy Address: <http://localhost:3001/proxy>
 
-> Use the default authentication key `sk-123456` to login to the management interface. The authentication key can be modified via AUTH_KEY in the .env file.
+> Use your modified AUTH_KEY to log in to the management interface.
 
 ### Method 3: Source Build
 
@@ -111,6 +115,7 @@ go mod tidy
 # Create configuration
 cp .env.example .env
 
+# Edit the .env file and change AUTH_KEY to a strong password. Never use default or simple keys like sk-123456.
 # Modify DATABASE_DSN and REDIS_DSN configurations in .env
 # REDIS_DSN is optional; if not configured, memory storage will be enabled
 
@@ -123,7 +128,7 @@ After deployment:
 - Access Web Management Interface: <http://localhost:3001>
 - API Proxy Address: <http://localhost:3001/proxy>
 
-> Use the default authentication key `sk-123456` to login to the management interface. The authentication key can be modified via AUTH_KEY in the .env file.
+> Use your modified AUTH_KEY to log in to the management interface.
 
 ### Method 4: Cluster Deployment
 
@@ -175,7 +180,7 @@ GPT-Load adopts a dual-layer configuration architecture:
 
 | Setting             | Environment Variable | Default              | Description                                         |
 | ------------------- | -------------------- | -------------------- | --------------------------------------------------- |
-| Admin Key           | `AUTH_KEY`           | `sk-123456`          | Access authentication key for the **management end**|
+| Admin Key           | `AUTH_KEY`           | `sk-123456`          | Access authentication key for the **management end**, please change it to a strong password |
 | Database Connection | `DATABASE_DSN`       | `./data/gpt-load.db` | Database connection string (DSN) or file path       |
 | Redis Connection    | `REDIS_DSN`          | -                    | Redis connection string, uses memory storage when empty |
 

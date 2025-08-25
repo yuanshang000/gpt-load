@@ -286,7 +286,7 @@ The web management interface provides the following features:
 
 GPT-Load routes requests to different AI services through group names. Usage is as follows:
 
-#### 1. Proxy Endpoint Format
+### 1. Proxy Endpoint Format
 
 ```text
 http://localhost:3001/proxy/{group_name}/{original_api_path}
@@ -295,7 +295,7 @@ http://localhost:3001/proxy/{group_name}/{original_api_path}
 - `{group_name}`: Group name created in the management interface
 - `{original_api_path}`: Maintain complete consistency with original AI service paths
 
-#### 2. Authentication Methods
+### 2. Authentication Methods
 
 Configure **Proxy Keys** in the web management interface, which supports system-level and group-level proxy keys.
 
@@ -303,7 +303,7 @@ Configure **Proxy Keys** in the web management interface, which supports system-
 - **Key Scope**: **Global Proxy Keys** configured in system settings can be used in all groups. **Group Proxy Keys** configured in a group are only valid for the current group.
 - **Format**: Multiple keys are separated by commas.
 
-#### 3. OpenAI Interface Example
+### 3. OpenAI Interface Example
 
 Assuming a group named `openai` was created:
 
@@ -330,7 +330,7 @@ curl -X POST http://localhost:3001/proxy/openai/v1/chat/completions \
 - Replace `https://api.openai.com` with `http://localhost:3001/proxy/openai`
 - Replace original API Key with the **Proxy Key**
 
-#### 4. Gemini Interface Example
+### 4. Gemini Interface Example
 
 Assuming a group named `gemini` was created:
 
@@ -355,7 +355,7 @@ curl -X POST http://localhost:3001/proxy/gemini/v1beta/models/gemini-2.5-pro:gen
 - Replace `https://generativelanguage.googleapis.com` with `http://localhost:3001/proxy/gemini`
 - Replace `key=your-gemini-key` in URL parameter with the **Proxy Key**
 
-#### 5. Anthropic Interface Example
+### 5. Anthropic Interface Example
 
 Assuming a group named `anthropic` was created:
 
@@ -384,7 +384,7 @@ curl -X POST http://localhost:3001/proxy/anthropic/v1/messages \
 - Replace `https://api.anthropic.com` with `http://localhost:3001/proxy/anthropic`
 - Replace the original API Key in `x-api-key` header with the **Proxy Key**
 
-#### 6. Supported Interfaces
+### 6. Supported Interfaces
 
 **OpenAI Format:**
 
@@ -406,7 +406,7 @@ curl -X POST http://localhost:3001/proxy/anthropic/v1/messages \
 - `/v1/models` - Model list (if available)
 - And all other Anthropic native interfaces
 
-#### 7. Client SDK Configuration
+### 7. Client SDK Configuration
 
 **OpenAI Python SDK:**
 

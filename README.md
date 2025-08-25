@@ -286,7 +286,7 @@ Web 管理界面提供以下功能：
 
 GPT-Load 通过分组名称路由请求到不同的 AI 服务。使用方式如下：
 
-#### 1. 代理端点格式
+### 1. 代理端点格式
 
 ```text
 http://localhost:3001/proxy/{group_name}/{原始API路径}
@@ -295,7 +295,7 @@ http://localhost:3001/proxy/{group_name}/{原始API路径}
 - `{group_name}`: 在管理界面创建的分组名称
 - `{原始API路径}`: 保持与原始 AI 服务完全一致的路径
 
-#### 2. 认证方式
+### 2. 认证方式
 
 在 Web 管理界面中配置**代理密钥** (`Proxy Keys`)，可设置系统级别和分组级别的代理密钥。
 
@@ -303,7 +303,7 @@ http://localhost:3001/proxy/{group_name}/{原始API路径}
 - **密钥作用域**: 在系统设置配置的 **全局代理密钥** 可以在所有分组使用，在分组配置的 **分组代理密钥** 仅在当前分组有效。
 - **格式**: 多个密钥使用半角英文逗号分隔。
 
-#### 3. OpenAI 接口调用示例
+### 3. OpenAI 接口调用示例
 
 假设创建了名为 `openai` 的分组：
 
@@ -330,7 +330,7 @@ curl -X POST http://localhost:3001/proxy/openai/v1/chat/completions \
 - 将 `https://api.openai.com` 替换为 `http://localhost:3001/proxy/openai`
 - 将原始 API Key 替换为**代理密钥**
 
-#### 4. Gemini 接口调用示例
+### 4. Gemini 接口调用示例
 
 假设创建了名为 `gemini` 的分组：
 
@@ -355,7 +355,7 @@ curl -X POST http://localhost:3001/proxy/gemini/v1beta/models/gemini-2.5-pro:gen
 - 将 `https://generativelanguage.googleapis.com` 替换为 `http://localhost:3001/proxy/gemini`
 - 将 URL 参数中的 `key=your-gemini-key` 替换为**代理密钥**
 
-#### 5. Anthropic 接口调用示例
+### 5. Anthropic 接口调用示例
 
 假设创建了名为 `anthropic` 的分组：
 
@@ -384,7 +384,7 @@ curl -X POST http://localhost:3001/proxy/anthropic/v1/messages \
 - 将 `https://api.anthropic.com` 替换为 `http://localhost:3001/proxy/anthropic`
 - 将 `x-api-key` 头部中的原始 API Key 替换为**代理密钥**
 
-#### 6. 支持的接口
+### 6. 支持的接口
 
 **OpenAI 格式：**
 
@@ -406,7 +406,7 @@ curl -X POST http://localhost:3001/proxy/anthropic/v1/messages \
 - `/v1/models` - 模型列表（如果可用）
 - 以及其他所有 Anthropic 原生接口
 
-#### 7. 客户端 SDK 配置
+### 7. 客户端 SDK 配置
 
 **OpenAI Python SDK：**
 

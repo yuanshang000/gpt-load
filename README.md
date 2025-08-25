@@ -4,7 +4,7 @@
 
 [![Release](https://img.shields.io/github/v/release/tbphp/gpt-load)](https://github.com/tbphp/gpt-load/releases)
 ![Go Version](https://img.shields.io/badge/Go-1.23+-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 一个高性能、企业级的 AI 接口透明代理服务，专门为需要集成多种 AI 服务的企业和开发者设计。采用 Go 语言开发，具备智能密钥管理、负载均衡和完善的监控功能，专为高并发生产环境而设计。
 
@@ -224,9 +224,10 @@ GPT-Load 会自动从环境变量中读取代理设置，用于向上游 AI 服�
 | 配置项       | 字段名                               | 默认值                      | 分组可覆盖 | 说明                                   |
 | ------------ | ------------------------------------ | --------------------------- | ---------- | -------------------------------------- |
 | 项目地址     | `app_url`                            | `http://localhost:3001`     | ❌         | 项目基础 URL                           |
+| 全局代理密钥 | `proxy_keys`                         | 初始值为环境配置的 AUTH_KEY | ❌         | 全局生效的代理认证密钥，多个用逗号分隔 |
 | 日志保留天数 | `request_log_retention_days`         | 7                           | ❌         | 请求日志保留天数，0 为不清理           |
 | 日志写入间隔 | `request_log_write_interval_minutes` | 1                           | ❌         | 日志写入数据库周期（分钟）             |
-| 全局代理密钥 | `proxy_keys`                         | 初始值为环境配置的 AUTH_KEY | ❌         | 全局生效的代理认证密钥，多个用逗号分隔 |
+| 启用日志详情 | `enable_request_body_logging`        | false                       | ✅         | 是否在请求日志中记录完整的请求体和响应体内容，启用会增加内存和存储占用 |
 
 **请求设置：**
 
@@ -452,6 +453,12 @@ response = client.messages.create(
 > **重要提示**：作为透明代理服务，GPT-Load 完全保留各 AI 服务的原生 API 格式和认证方式，仅需要替换端点地址并使用在管理端配置的**代理密钥**即可无缝迁移。
 
 </details>
+
+## 贡献
+
+感谢所有为 GPT-Load 做出贡献的开发者们！
+
+[![Contributors](https://contrib.rocks/image?repo=tbphp/gpt-load)](https://github.com/tbphp/gpt-load/graphs/contributors)
 
 ## 许可证
 

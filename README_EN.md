@@ -4,7 +4,7 @@
 
 [![Release](https://img.shields.io/github/v/release/tbphp/gpt-load)](https://github.com/tbphp/gpt-load/releases)
 ![Go Version](https://img.shields.io/badge/Go-1.23+-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 A high-performance, enterprise-grade AI API transparent proxy service designed specifically for enterprises and developers who need to integrate multiple AI services. Built with Go, featuring intelligent key management, load balancing, and comprehensive monitoring capabilities, designed for high-concurrency production environments.
 
@@ -224,9 +224,10 @@ Supported Proxy Protocol Formats:
 | Setting            | Field Name                           | Default                 | Group Override | Description                                  |
 | ------------------ | ------------------------------------ | ----------------------- | -------------- | -------------------------------------------- |
 | Project URL        | `app_url`                            | `http://localhost:3001` | ❌             | Project base URL                             |
+| Global Proxy Keys  | `proxy_keys`                         | Initial value from `AUTH_KEY` | ❌         | Globally effective proxy keys, comma-separated |
 | Log Retention Days | `request_log_retention_days`         | 7                       | ❌             | Request log retention days, 0 for no cleanup |
 | Log Write Interval | `request_log_write_interval_minutes` | 1                       | ❌             | Log write to database cycle (minutes)        |
-| Global Proxy Keys  | `proxy_keys`                         | Initial value from `AUTH_KEY` | ❌         | Globally effective proxy keys, comma-separated |
+| Enable Request Body Logging | `enable_request_body_logging` | false | ✅ | Whether to log complete request and response body content in request logs |
 
 **Request Settings:**
 
@@ -452,6 +453,12 @@ response = client.messages.create(
 > **Important Note**: As a transparent proxy service, GPT-Load completely preserves the native API formats and authentication methods of various AI services. You only need to replace the endpoint address and use the **Proxy Key** configured in the management interface for seamless migration.
 
 </details>
+
+## Contributing
+
+Thanks to all the developers who have contributed to GPT-Load!
+
+[![Contributors](https://contrib.rocks/image?repo=tbphp/gpt-load)](https://github.com/tbphp/gpt-load/graphs/contributors)
 
 ## License
 

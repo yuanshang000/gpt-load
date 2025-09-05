@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"gpt-load/internal/container"
+	db "gpt-load/internal/db/migrations"
 	"gpt-load/internal/encryption"
 	"gpt-load/internal/models"
 	"gpt-load/internal/store"
@@ -102,6 +103,7 @@ func NewMigrateKeysCommand(db *gorm.DB, configManager types.ConfigManager, cache
 
 // Execute performs the key migration
 func (cmd *MigrateKeysCommand) Execute() error {
+	db.HandleLegacyIndexes(cmd.db)
 	// pre. Database migration and repair
 	if err := cmd.db.AutoMigrate(&models.APIKey{}); err != nil {
 		return fmt.Errorf("database auto-migration failed: %w", err)

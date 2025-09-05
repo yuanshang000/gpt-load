@@ -148,12 +148,12 @@ func (s *Server) ListKeysInGroup(c *gin.Context) {
 	}
 
 	searchKeyword := c.Query("key_value")
-
-	query, err := s.KeyService.ListKeysInGroupQuery(groupID, statusFilter, searchKeyword)
-	if err != nil {
-		response.Error(c, app_errors.NewAPIError(app_errors.ErrInternal, err.Error()))
-		return
+	searchHash := ""
+	if searchKeyword != "" {
+		searchHash = s.EncryptionSvc.Hash(searchKeyword)
 	}
+
+	query := s.KeyService.ListKeysInGroupQuery(groupID, statusFilter, searchHash)
 
 	var keys []models.APIKey
 	paginatedResult, err := response.Paginate(c, query, &keys)
@@ -162,11 +162,12 @@ func (s *Server) ListKeysInGroup(c *gin.Context) {
 		return
 	}
 
+	// Decrypt all keys for display
 	for i := range keys {
 		decryptedValue, err := s.EncryptionSvc.Decrypt(keys[i].KeyValue)
 		if err != nil {
 			logrus.WithError(err).WithField("key_id", keys[i].ID).Error("Failed to decrypt key value for listing")
-			keys[i].KeyValue = "[failed to decrypt]"
+			keys[i].KeyValue = "failed-to-decrypt"
 		} else {
 			keys[i].KeyValue = decryptedValue
 		}

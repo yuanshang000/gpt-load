@@ -286,7 +286,7 @@ GPT-Load 支持对 API 密钥进行加密存储。您可以随时启用、禁用
 docker compose pull
 
 # 2. 停止服务
-docker compose stop
+docker compose down
 
 # 3. 备份数据库（强烈建议）
 # 执行迁移前，必须手动备份数据库或者导出你的密钥，避免因操作或者异常导致的密钥丢失。

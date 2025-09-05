@@ -286,7 +286,7 @@ GPT-Load supports encrypted storage of API keys. You can enable, disable, or cha
 docker compose pull
 
 # 2. Stop the service
-docker compose stop
+docker compose down
 
 # 3. Backup the database (strongly recommended)
 # Before migration, you must manually backup the database or export your keys to avoid key loss due to operations or exceptions.

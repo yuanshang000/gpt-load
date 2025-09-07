@@ -1,6 +1,6 @@
 # GPT-Load
 
-[English](README.md) | 中文文档
+[English](README.md) | 中文文档 | [日本語](README_JP.md)
 
 [![Release](https://img.shields.io/github/v/release/tbphp/gpt-load)](https://github.com/tbphp/gpt-load/releases)
 ![Go Version](https://img.shields.io/badge/Go-1.23+-blue.svg)
@@ -341,6 +341,7 @@ make run
 ### 注意事项
 
 ⚠️ **重要提醒**：
+- **ENCRYPTION_KEY 一旦丢失将无法恢复已加密的数据！** 请务必安全备份此密钥，建议使用密码管理器或安全的密钥管理系统保存
 - 迁移前**必须停止服务**，避免数据不一致
 - 强烈建议**备份数据库**，以防迁移失败需要恢复
 - 密钥建议使用 **32 位或更长的随机字符串**，确保安全性

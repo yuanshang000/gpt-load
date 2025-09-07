@@ -1,6 +1,6 @@
 # GPT-Load
 
-English | [中文文档](README_CN.md)
+English | [中文文档](README_CN.md) | [日本語](README_JP.md)
 
 [![Release](https://img.shields.io/github/v/release/tbphp/gpt-load)](https://github.com/tbphp/gpt-load/releases)
 ![Go Version](https://img.shields.io/badge/Go-1.23+-blue.svg)
@@ -341,6 +341,7 @@ make run
 ### Important Notes
 
 ⚠️ **Important Reminders**:
+- **Once ENCRYPTION_KEY is lost, encrypted data CANNOT be recovered!** Please securely backup this key. Consider using a password manager or secure key management system
 - **Service must be stopped** before migration to avoid data inconsistency
 - Strongly recommended to **backup the database** in case migration fails and recovery is needed
 - Keys should use **32 characters or longer random strings** for security

@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "*"
+    branches:
+      - main
 jobs:
   build_docker_image:
     name: Build Docker Image
@@ -41,9 +43,8 @@ jobs:
           flavor: |
             latest=false
           tags: |
-            type=ref,event=tag
-            type=raw,value=beta,enable=${{ endsWith(github.ref, '-beta') }}
-            type=raw,value=latest,enable=${{ !contains(github.ref, '-') }}
+            type=raw,value=v1.1.0
+            type=raw,value=latest
 
       - name: Build and push Docker image
         id: build
@@ -55,4 +56,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            VERSION=${{ github.ref_name }}
+            VERSION=v1.1.0

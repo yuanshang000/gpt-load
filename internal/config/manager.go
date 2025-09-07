@@ -83,7 +83,7 @@ func (m *Manager) ReloadConfig() error {
 			Key: os.Getenv("AUTH_KEY"),
 		},
 		CORS: types.CORSConfig{
-			Enabled:          utils.ParseBoolean(os.Getenv("ENABLE_CORS"), true),
+			Enabled:          utils.ParseBoolean(os.Getenv("ENABLE_CORS"), false),
 			AllowedOrigins:   utils.ParseArray(os.Getenv("ALLOWED_ORIGINS"), []string{}),
 			AllowedMethods:   utils.ParseArray(os.Getenv("ALLOWED_METHODS"), []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
 			AllowedHeaders:   utils.ParseArray(os.Getenv("ALLOWED_HEADERS"), []string{"*"}),

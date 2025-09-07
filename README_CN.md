@@ -195,8 +195,8 @@ GPT-Load 采用双层配置架构：
 | 配置项       | 环境变量                  | 默认值                        | 说明                     |
 | ------------ | ------------------------- | ----------------------------- | ------------------------ |
 | 最大并发请求 | `MAX_CONCURRENT_REQUESTS` | 100                           | 系统允许的最大并发请求数 |
-| 启用 CORS    | `ENABLE_CORS`             | true                          | 是否启用跨域资源共享     |
-| 允许的来源   | `ALLOWED_ORIGINS`         | `*`                           | 允许的来源，逗号分隔     |
+| 启用 CORS    | `ENABLE_CORS`             | false                          | 是否启用跨域资源共享     |
+| 允许的来源   | `ALLOWED_ORIGINS`         | -                             | 允许的来源，逗号分隔     |
 | 允许的方法   | `ALLOWED_METHODS`         | `GET,POST,PUT,DELETE,OPTIONS` | 允许的 HTTP 方法         |
 | 允许的头部   | `ALLOWED_HEADERS`         | `*`                           | 允许的请求头，逗号分隔   |
 | 允许凭据     | `ALLOW_CREDENTIALS`       | false                         | 是否允许发送凭据         |

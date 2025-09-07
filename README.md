@@ -195,8 +195,8 @@ GPT-Load adopts a dual-layer configuration architecture:
 | Setting                 | Environment Variable      | Default                       | Description                                     |
 | ----------------------- | ------------------------- | ----------------------------- | ----------------------------------------------- |
 | Max Concurrent Requests | `MAX_CONCURRENT_REQUESTS` | 100                           | Maximum concurrent requests allowed by system   |
-| Enable CORS             | `ENABLE_CORS`             | true                          | Whether to enable Cross-Origin Resource Sharing |
-| Allowed Origins         | `ALLOWED_ORIGINS`         | `*`                           | Allowed origins, comma-separated                |
+| Enable CORS             | `ENABLE_CORS`             | false                          | Whether to enable Cross-Origin Resource Sharing |
+| Allowed Origins         | `ALLOWED_ORIGINS`         | -                             | Allowed origins, comma-separated                |
 | Allowed Methods         | `ALLOWED_METHODS`         | `GET,POST,PUT,DELETE,OPTIONS` | Allowed HTTP methods                            |
 | Allowed Headers         | `ALLOWED_HEADERS`         | `*`                           | Allowed request headers, comma-separated        |
 | Allow Credentials       | `ALLOW_CREDENTIALS`       | false                         | Whether to allow sending credentials            |
